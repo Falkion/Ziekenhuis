@@ -47,20 +47,20 @@ public class Frame {
     private JTable mainTable;
     JFrame jf = new JFrame();
     int rowCount;
-    String dokter1;
-    String dokter2;
+    String dokter1= "i";
+    String dokter2= "i";
     
-    String patient1;
-    String patient2;
-    String patient3;
-    String patient4;
+    String patient1= "i";
+    String patient2= "i";
+    String patient3= "i";
+    String patient4= "i";
            
-    String afspraak1;
-    String afspraak2;
-    String afspraak3;
-    String afspraak4;
+    String afspraak1= "i";
+    String afspraak2= "i";
+    String afspraak3= "i";
+    String afspraak4= "i";
     
-    String deAfspraken;
+    String deAfspraken= "i";
     
     public Frame() throws Exception {
 
@@ -82,6 +82,7 @@ public class Frame {
         jf = new JFrame();
 
         jf.setSize(864, 576);
+        jf.setLocationRelativeTo(null);
         jf.setTitle("Ziekenhuis Applicatie");
         jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -89,7 +90,7 @@ public class Frame {
         JPanel OptionList = this.getQueryButtons();
 
         // Right Main area
-        //JTable mainTable = this.getQueryToTable(handler.getUitDienstResult());
+        //JTable mainTable = this.getQueryToTable(handler.showAfspraken());
         mainFrame = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                 OptionList, new JScrollPane(mainTable));
 
@@ -121,8 +122,6 @@ public class Frame {
             @Override
             public void actionPerformed(ActionEvent event) {
                 patientFrame();
-                jf.setVisible(false);
-                createMainView();
             }
         }
         class ClickListener3 implements ActionListener {
@@ -134,8 +133,6 @@ public class Frame {
                 } catch (SQLException ex) {
                     Logger.getLogger(Frame.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                jf.setVisible(false);
-                createMainView();
 
             }
         }
@@ -290,9 +287,12 @@ public class Frame {
             public void actionPerformed(ActionEvent e) {
                dokter1 = userText.getText();
                dokter2 = afdelingText.getText();
-               handler.addDokter();
-               System.exit(0);
-               createMainView();        
+                try {
+                    handler.addDokter(dokter1, dokter2);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Frame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+               dokterFrame.dispose();       
             }
         
         }
@@ -353,8 +353,12 @@ public class Frame {
                patient2 = adresText.getText();
                patient3 = woonplaatsText.getText();
                patient4 = verzekeringText.getText();
-               handler.addPatient();
-               patientFrame.setVisible(false);
+                try {
+                    handler.addPatient(patient1, patient2, patient3, patient4);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Frame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+               patientFrame.dispose();
             }
         
         }
@@ -392,19 +396,19 @@ public class Frame {
         datumLabel.setBounds(10, 70, 80, 25);
         panel.add(datumLabel);
         
-        DateFormat format = new SimpleDateFormat("dd.mm.yyyy");
+        DateFormat format = new SimpleDateFormat("yyyy-mm-dd");
         
         JFormattedTextField datumText = new JFormattedTextField(format);
         datumText.setBounds(100, 70, 160, 25);
         panel.add(datumText);
         
-        JLabel tijdLabel = new JLabel("Verzekering");
+        JLabel tijdLabel = new JLabel("Tijdstip");
         tijdLabel.setBounds(10, 100, 80, 25);
         panel.add(tijdLabel);
 
-        JTextField verzekeringText = new JTextField(20);
-        verzekeringText.setBounds(100, 100, 160, 25);
-        panel.add(verzekeringText);
+        JTextField tijdText = new JTextField(20);
+        tijdText.setBounds(100, 100, 160, 25);
+        panel.add(tijdText);
         
         JButton toevoegButton = new JButton("Toevoegen");
         toevoegButton.setBounds(10, 140, 80, 25);
@@ -414,12 +418,16 @@ public class Frame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-               patient1 = dokter.getSelectedItem().toString();
-               patient2 = patient.getSelectedItem().toString();
-               patient3 = datumText.getText();
-               patient4 = verzekeringText.getText();
-               handler.maakAfspraak();
-               afspraakFrame.setVisible(false);
+               afspraak1 = dokter.getSelectedItem().toString();
+               afspraak2 = patient.getSelectedItem().toString();
+               afspraak3 = datumText.getText();
+               afspraak4 = tijdText.getText();
+                try {
+                    handler.maakAfspraak(afspraak1, afspraak2, afspraak3, afspraak4);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Frame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+               afspraakFrame.dispose();
             }
         
         }
@@ -454,8 +462,8 @@ public class Frame {
             @Override
             public void actionPerformed(ActionEvent e) {
                deAfspraken = dokter.getSelectedItem().toString();
-               mainTable = getQueryToTable(handler.showAfspraken());
-               System.exit(0);
+               mainTable = getQueryToTable(handler.showAfspraken(deAfspraken));
+               afspraakFrame.dispose();
             }
         
         }

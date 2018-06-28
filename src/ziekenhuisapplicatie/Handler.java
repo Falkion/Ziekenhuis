@@ -52,6 +52,7 @@ public class Handler {
         System.out.println("Current Query:");
         System.out.println(query);
         try {
+            this.stmt = conn.createStatement();
             rs = stmt.executeQuery(query);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -88,38 +89,33 @@ public class Handler {
      *
      * @return
      */
-    public ResultSet addDokter() {
+    public void addDokter(String naam, String afdeling) throws SQLException {
+        stmt = conn.createStatement();
+        stmt.executeUpdate("insert into Dokter (Naam, Afdeling) " + "values('" + naam + "','" + afdeling + "')");
+         
+    }
+    public void addPatient(String naam, String adres, String woonplaats, String verzekering) throws SQLException {
         String query;
 
-        query = "insert into [Dokter](Naam, Afdeling) " + "values" + "(" + frame.dokter1 + "," + frame.dokter2 + ")";
-      
-        System.out.println(query);
-        return this.doQuery(query);
+        query = "insert into Patient (Naam, Adres, Woonplaats, Verzekering) " 
+                + "values " +  "('" + naam + "','"+  adres + "','"+ woonplaats + "','"+ verzekering + "')";
+       
+        stmt = conn.createStatement();
+        stmt.executeUpdate(query);
     }
-    public ResultSet addPatient() {
-        String query;
-
-        query = "insert into '[Patient](Naam, Adres, Woonplaats, Verzekering) " 
-                + "values" +  "(" + frame.patient1 + ","+  frame.patient2 + ","+ frame.patient3 + ","+ frame.patient4 + ")";
-        System.out.println(query);
-        return this.doQuery(query);
-    }
-    public ResultSet maakAfspraak() {
+    public void maakAfspraak(String naam1, String naam2, String datum, String tijdstip) throws SQLException {
         String query;
         
-        query = "insert into Dokter(NaamDokter, NaamPatient, Datum, Tijdstip) " 
-                + "values (" + frame.afspraak1 + ","+ frame.afspraak2 + ","+ frame.afspraak3 + ","+ frame.afspraak4 + ") ";
-        System.out.println(query);
-        return this.doQuery(query);
+        query = "insert into Afspraken (NaamDokter, NaamPatient, Datum, Time) " 
+                + "values ('" + naam1 + "','"+ naam2 + "','"+ datum + "','"+ tijdstip + "') ";
+        stmt = conn.createStatement();
+        stmt.executeUpdate(query);
     }
-    public ResultSet showAfspraken() {
+    public ResultSet showAfspraken(String naam) {
         String query;
-
-        query = "select * "
-                + "from Afspraken "
-                + "where NaamDokter is " + frame.deAfspraken;
-        System.out.println(query);
-        return this.doQuery(query);
+        query = "SELECT NaamPatient, Time  FROM Afspraken  WHERE NaamDokter LIKE  '" + naam + "% '";
+        ResultSet set = doQuery(query);
+        return set;
     }
     
     public ArrayList<String> dokterNamen() throws SQLException{

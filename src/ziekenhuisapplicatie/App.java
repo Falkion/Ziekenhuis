@@ -22,7 +22,7 @@ public class App {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-                String connectionString = "jdbc:sqlserver://localhost:1433;user=testAccount;password=Welcome";
+                String connectionString = "jdbc:sqlserver://localhost:1433;DatabaseName=Ziekenhuis;user=testAccount;password=Welcome";
                 try {
                     Connection conn = DriverManager.getConnection(connectionString);
                     new Frame();
